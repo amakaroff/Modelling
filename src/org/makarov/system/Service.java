@@ -114,7 +114,7 @@ public class Service {
     }
 
     private void processCheckingServiceQueue(Task task) {
-        if (serviceQueue.size() == 2) {
+        if (serviceQueue.size() == queueSize) {
             task.refuse();
             resultQueue.add(task);
         } else {
