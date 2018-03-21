@@ -18,11 +18,11 @@ public class Main {
 
     private static final int COUNT = 1000;
 
-    private static final int QUEUE_SIZE = 2;
+    private static final int QUEUE_SIZE = 1000;
 
     private static final int DEVICE_COUNT = 2;
 
-    private static final double LAMBDA = 0.3;
+    private static final double LAMBDA = 500;
 
     private static final double U = 0.3;
 
