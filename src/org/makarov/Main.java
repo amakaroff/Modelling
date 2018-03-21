@@ -22,9 +22,9 @@ public class Main {
 
     private static final int DEVICE_COUNT = 2;
 
-    private static final double LAMBDA = 5;
+    private static final double LAMBDA = 0.3;
 
-    private static final int U = 5;
+    private static final double U = 0.3;
 
     public static void main(String[] args) {
         for (int i = 0; i < 10; i++) {
@@ -42,15 +42,14 @@ public class Main {
                     }
                 }
 
+
                 System.out.println("All service working time: " + endTime);
                 System.out.println("Amount of refused: " + countRefused);
                 System.out.println("All amount: " + resultTasks.size());
-                System.out.println("Percent of refused tasks: " + (countRefused / resultTasks.size()) * 100 + "%");
-                System.out.println(String.format("Average time of working: %.10f",
-                        (timeWorking / (resultTasks.size() - countRefused))));
+                System.out.printf("Percent of refused tasks: %.2f%%\n", (countRefused / resultTasks.size()) * 100);
+                System.out.printf("Average time of working: %.10f\n", (timeWorking / (resultTasks.size() - countRefused)));
             });
             System.out.println();
         }
-
     }
 }
