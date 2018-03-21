@@ -2,6 +2,7 @@ package org.makarov.system;
 
 import org.makarov.system.entity.Device;
 import org.makarov.system.entity.Task;
+import org.makarov.system.util.Callback;
 import org.makarov.system.util.ExponentialDistribution;
 
 import java.util.*;
@@ -119,19 +120,19 @@ public class Service {
 
     private void processArriveTaskEvent() {
         Task task = tasks.poll();
-        processCheckingServiceQueue(task);
+        checkServiceQueue(task);
 
         for (Device device : devices) {
             task = serviceQueue.peek();
 
             if (task != null && device.isFinish()) {
-                resolveOldTask(device);
-                processNewTask(device, task);
+                completeOldTask(device);
+                executeNewTask(device, task);
             }
         }
     }
 
-    private void processCheckingServiceQueue(Task task) {
+    private void checkServiceQueue(Task task) {
         if (serviceQueue.size() == queueSize) {
             task.refuse();
             resultQueue.add(task);
@@ -143,18 +144,18 @@ public class Service {
     private void processDeviceResolveTaskEvent(Device device) {
         Task task = serviceQueue.peek();
 
-        resolveOldTask(device);
-        processNewTask(device, task);
+        completeOldTask(device);
+        executeNewTask(device, task);
     }
 
-    private void resolveOldTask(Device device) {
+    private void completeOldTask(Device device) {
         Task resolveTask = device.resolveTask();
         if (resolveTask != null) {
             resultQueue.add(resolveTask);
         }
     }
 
-    private void processNewTask(Device device, Task task) {
+    private void executeNewTask(Device device, Task task) {
         if (task != null) {
             task.setServiceTime(currentTime);
             device.processTask(task);

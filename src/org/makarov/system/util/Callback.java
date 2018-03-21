@@ -1,4 +1,4 @@
-package org.makarov.system;
+package org.makarov.system.util;
 
 import org.makarov.system.entity.Task;
 

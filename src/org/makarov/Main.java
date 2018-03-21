@@ -27,23 +27,30 @@ public class Main {
     private static final int U = 5;
 
     public static void main(String[] args) {
-        Service service = new Service(COUNT, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U);
-        service.run((resultTasks, endTime) -> {
-            int countRefused = 0;
-            double timeWorking = 0;
-            for (Task task : resultTasks) {
-                if (task.isRefuse()) {
-                    countRefused++;
-                } else {
-                    timeWorking += task.getEndTime() - task.getBeginTime();
+        for (int i = 0; i < 10; i++) {
+            Service service = new Service(COUNT, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U);
+
+            System.out.println("Service: " + (i + 1));
+            service.run((resultTasks, endTime) -> {
+                double countRefused = 0;
+                double timeWorking = 0;
+                for (Task task : resultTasks) {
+                    if (task.isRefuse()) {
+                        countRefused++;
+                    } else {
+                        timeWorking += task.getEndTime() - task.getBeginTime();
+                    }
                 }
-            }
 
+                System.out.println("All service working time: " + endTime);
+                System.out.println("Amount of refused: " + countRefused);
+                System.out.println("All amount: " + resultTasks.size());
+                System.out.println("Percent of refused tasks: " + (countRefused / resultTasks.size()) * 100 + "%");
+                System.out.println(String.format("Average time of working: %.10f",
+                        (timeWorking / (resultTasks.size() - countRefused))));
+            });
+            System.out.println();
+        }
 
-            System.out.println("All service working time: " + endTime);
-            System.out.println("Amount of refused: " + countRefused);
-            System.out.println("All amount: " + resultTasks.size());
-            System.out.println(String.format("Middle time of working: %.10f", (timeWorking / (resultTasks.size() - countRefused))));
-        });
     }
 }
