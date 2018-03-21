@@ -70,11 +70,11 @@ public class Service {
         return new ArrayDeque<>(count);
     }
 
-    public void run() {
-        while (!tasks.isEmpty()) {
+    public void run(Callback callback) {
+        while (isContinueWorking()) {
             Task task = tasks.peek();
 
-            double taskTime = task.getBeginTime();
+            double taskTime = getTaskArriveTime(task);
             Map<Double, Device> deviceEndTimes = createDeviceWorkTimeMap();
             double minDeviceEndTime = Collections.min(deviceEndTimes.keySet());
 
@@ -87,13 +87,31 @@ public class Service {
             }
         }
 
-        doPostExecute();
+        callback.call(resultQueue, currentTime);
+    }
+
+    private boolean isContinueWorking() {
+        if (!tasks.isEmpty() || !serviceQueue.isEmpty()) {
+            return true;
+        }
+
+        for (Device device : devices) {
+            if (device.getEndTime() != Double.MAX_VALUE) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private double getTaskArriveTime(Task task) {
+        return task == null ? Double.MAX_VALUE : task.getBeginTime();
     }
 
     private Map<Double, Device> createDeviceWorkTimeMap() {
         Map<Double, Device> deviceEndTimes = new HashMap<>();
         for (Device device : devices) {
-            deviceEndTimes.put(device.endTime(), device);
+            deviceEndTimes.put(device.getEndTime(), device);
         }
 
         return deviceEndTimes;
@@ -142,17 +160,5 @@ public class Service {
             device.processTask(task);
             serviceQueue.remove();
         }
-    }
-
-    private void doPostExecute() {
-        int countRefused = 0;
-        for (Task task : resultQueue) {
-            if (task.isRefuse()) {
-                countRefused++;
-            }
-        }
-
-        System.out.println("Amount of refused: " + countRefused);
-        System.out.println("All amount: " + count);
     }
 }

@@ -1,6 +1,7 @@
 package org.makarov;
 
 import org.makarov.system.Service;
+import org.makarov.system.entity.Task;
 
 public class Main {
 
@@ -27,6 +28,22 @@ public class Main {
 
     public static void main(String[] args) {
         Service service = new Service(COUNT, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U);
-        service.run();
+        service.run((resultTasks, endTime) -> {
+            int countRefused = 0;
+            double timeWorking = 0;
+            for (Task task : resultTasks) {
+                if (task.isRefuse()) {
+                    countRefused++;
+                } else {
+                    timeWorking += task.getEndTime() - task.getBeginTime();
+                }
+            }
+
+
+            System.out.println("All service working time: " + endTime);
+            System.out.println("Amount of refused: " + countRefused);
+            System.out.println("All amount: " + resultTasks.size());
+            System.out.println(String.format("Middle time of working: %.10f", (timeWorking / (resultTasks.size() - countRefused))));
+        });
     }
 }

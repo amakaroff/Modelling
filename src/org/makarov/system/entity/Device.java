@@ -22,7 +22,7 @@ public class Device {
     public Task resolveTask() {
         if (this.currentTask != null) {
             Task task = this.currentTask;
-            task.setEndTime(endTime());
+            task.setEndTime(getEndTime());
             clear();
 
             return task;
@@ -37,10 +37,10 @@ public class Device {
     }
 
     public boolean isFinish(double currentTime) {
-        return this.currentTask == null || endTime() <= currentTime;
+        return this.currentTask == null || getEndTime() <= currentTime;
     }
 
-    public double endTime() {
+    public double getEndTime() {
         if (this.currentTask == null) {
             return Double.MAX_VALUE;
         }
