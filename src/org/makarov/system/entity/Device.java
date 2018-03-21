@@ -1,8 +1,11 @@
 package org.makarov.system.entity;
 
+import org.makarov.system.Service;
 import org.makarov.system.util.ExponentialDistribution;
 
 public class Device {
+
+    private final Service service;
 
     private Task currentTask;
 
@@ -10,8 +13,9 @@ public class Device {
 
     private final ExponentialDistribution exponentialDistribution;
 
-    public Device(ExponentialDistribution exponentialDistribution) {
+    public Device(ExponentialDistribution exponentialDistribution, Service service) {
         this.exponentialDistribution = exponentialDistribution;
+        this.service = service;
     }
 
     public void processTask(Task task) {
@@ -36,8 +40,8 @@ public class Device {
         this.resolveTime = 0;
     }
 
-    public boolean isFinish(double currentTime) {
-        return this.currentTask == null || getEndTime() <= currentTime;
+    public boolean isFinish() {
+        return this.currentTask == null || getEndTime() <= service.getCurrentTime();
     }
 
     public double getEndTime() {

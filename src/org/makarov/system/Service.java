@@ -16,15 +16,15 @@ public class Service {
 
     private final int deviceCount;
 
-    private ExponentialDistribution exponentialDistribution;
+    private final ExponentialDistribution exponentialDistribution;
 
-    private Queue<Task> tasks;
+    private final Queue<Task> tasks;
 
-    private Queue<Task> serviceQueue;
+    private final Queue<Task> serviceQueue;
 
-    private List<Device> devices;
+    private final List<Device> devices;
 
-    private Queue<Task> resultQueue;
+    private final Queue<Task> resultQueue;
 
     public Service(int count, int queueSize, int deviceCount, double lambda, double u) {
         this.currentTime = 0;
@@ -35,13 +35,13 @@ public class Service {
 
         this.exponentialDistribution = new ExponentialDistribution(lambda, u);
 
-        this.tasks = taskInit(currentTime);
+        this.tasks = tasksInit(currentTime);
         this.serviceQueue = queueServiceInit();
-        this.devices = deviceInit();
+        this.devices = devicesInit();
         this.resultQueue = resultQueueInit();
     }
 
-    private Queue<Task> taskInit(double time) {
+    private Queue<Task> tasksInit(double time) {
         Queue<Task> tasks = new ArrayDeque<>(count);
 
         for (int i = 0; i < count; i++) {
@@ -53,10 +53,10 @@ public class Service {
         return tasks;
     }
 
-    private List<Device> deviceInit() {
+    private List<Device> devicesInit() {
         List<Device> devices = new ArrayList<>();
         for (int i = 0; i < deviceCount; i++) {
-            devices.add(new Device(exponentialDistribution));
+            devices.add(new Device(exponentialDistribution, this));
         }
 
         return devices;
@@ -124,7 +124,7 @@ public class Service {
         for (Device device : devices) {
             task = serviceQueue.peek();
 
-            if (task != null && device.isFinish(currentTime)) {
+            if (task != null && device.isFinish()) {
                 resolveOldTask(device);
                 processNewTask(device, task);
             }
@@ -160,5 +160,9 @@ public class Service {
             device.processTask(task);
             serviceQueue.remove();
         }
+    }
+
+    public double getCurrentTime() {
+        return currentTime;
     }
 }
