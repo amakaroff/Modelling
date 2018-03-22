@@ -43,7 +43,7 @@ public class Service {
     }
 
     private Queue<Task> tasksInit(double time) {
-        Queue<Task> tasks = new ArrayDeque<>(count);
+        Queue<Task> tasks = new PriorityQueue<>(count);
 
         for (int i = 0; i < count; i++) {
             time += exponentialDistribution.getForArrive();

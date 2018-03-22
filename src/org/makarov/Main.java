@@ -18,38 +18,37 @@ public class Main {
 
     private static final int COUNT = 1000;
 
-    private static final int QUEUE_SIZE = 1000;
+    private static final int QUEUE_SIZE = 2;
 
     private static final int DEVICE_COUNT = 2;
 
-    private static final double LAMBDA = 500;
+    private static final double LAMBDA = 0.3;
 
     private static final double U = 0.3;
 
     public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            Service service = new Service(COUNT, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U);
+        Service service = new Service(COUNT, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U);
 
-            System.out.println("Service: " + (i + 1));
-            service.run((resultTasks, endTime) -> {
-                double countRefused = 0;
-                double timeWorking = 0;
-                for (Task task : resultTasks) {
-                    if (task.isRefuse()) {
-                        countRefused++;
-                    } else {
-                        timeWorking += task.getEndTime() - task.getBeginTime();
-                    }
+        service.run((resultTasks, endTime) -> {
+            int countRefused = 0;
+            double timeWorking = 0;
+            double queueWaiting = 0;
+            for (Task task : resultTasks) {
+                if (task.isRefuse()) {
+                    countRefused++;
+                } else {
+                    timeWorking += task.getEndTime() - task.getBeginTime();
+                    queueWaiting += task.getServiceTime() - task.getBeginTime();
                 }
+            }
+            int countResolved = resultTasks.size() - countRefused;
 
-
-                System.out.println("All service working time: " + endTime);
-                System.out.println("Amount of refused: " + countRefused);
-                System.out.println("All amount: " + resultTasks.size());
-                System.out.printf("Percent of refused tasks: %.2f%%\n", (countRefused / resultTasks.size()) * 100);
-                System.out.printf("Average time of working: %.10f\n", (timeWorking / (resultTasks.size() - countRefused)));
-            });
-            System.out.println();
-        }
+            System.out.println("All service working time: " + endTime);
+            System.out.println("Amount of refused: " + countRefused);
+            System.out.println("All amount: " + resultTasks.size());
+            System.out.printf("Percent of refused tasks: %.2f%%\n", ((double) countRefused / resultTasks.size()) * 100);
+            System.out.printf("Average time of working: %.10f\n", (timeWorking / countResolved));
+            System.out.printf("Average time of waiting in service queue: %.10f\n", (queueWaiting / countResolved));
+        });
     }
 }

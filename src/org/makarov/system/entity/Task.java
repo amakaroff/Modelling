@@ -1,6 +1,6 @@
 package org.makarov.system.entity;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     private double beginTime;
 
@@ -42,5 +42,10 @@ public class Task {
 
     public boolean isRefuse() {
         return isRefuse;
+    }
+
+    @Override
+    public int compareTo(Task task) {
+        return Double.compare(this.getBeginTime(), task.getBeginTime());
     }
 }
