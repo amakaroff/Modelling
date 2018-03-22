@@ -157,7 +157,7 @@ public class Service {
 
     private void executeNewTask(Device device, Task task) {
         if (task != null) {
-            task.setBeginResolveTime(currentTime);
+            task.setStartResolveTime(currentTime);
             device.processTask(task);
             serviceQueue.remove();
         }

@@ -20,13 +20,13 @@ public class Device {
 
     public void processTask(Task task) {
         this.currentTask = task;
-        this.resolveTime = this.exponentialDistribution.getForExecution();
+        this.resolveTime = this.currentTask.getStartResolveTime() + this.exponentialDistribution.getForExecution();
     }
 
     public Task resolveTask() {
         if (this.currentTask != null) {
             Task task = this.currentTask;
-            task.setEndResolveTime(getEndTime());
+            task.setFinishResolveTime(getEndTime());
             clear();
 
             return task;
@@ -49,6 +49,6 @@ public class Device {
             return Double.MAX_VALUE;
         }
 
-        return this.currentTask.getBeginResolveTime() + this.resolveTime;
+        return this.resolveTime;
     }
 }

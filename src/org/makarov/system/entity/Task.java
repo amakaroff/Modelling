@@ -4,9 +4,9 @@ public class Task implements Comparable<Task> {
 
     private double arriveTime;
 
-    private double beginResolveTime;
+    private double startResolveTime;
 
-    private double endResolveTime;
+    private double finishResolveTime;
 
     private boolean isRefuse = false;
 
@@ -18,26 +18,26 @@ public class Task implements Comparable<Task> {
         return arriveTime;
     }
 
-    public void setBeginResolveTime(double beginResolveTime) {
-        this.beginResolveTime = beginResolveTime;
+    public void setStartResolveTime(double startResolveTime) {
+        this.startResolveTime = startResolveTime;
     }
 
-    public double getBeginResolveTime() {
-        return beginResolveTime;
+    public double getStartResolveTime() {
+        return startResolveTime;
     }
 
-    public void setEndResolveTime(double endResolveTime) {
-        this.endResolveTime = endResolveTime;
+    public void setFinishResolveTime(double finishResolveTime) {
+        this.finishResolveTime = finishResolveTime;
     }
 
-    public double getEndResolveTime() {
-        return endResolveTime;
+    public double getFinishResolveTime() {
+        return finishResolveTime;
     }
 
     public void refuse() {
         isRefuse = true;
-        beginResolveTime = Double.POSITIVE_INFINITY;
-        endResolveTime = Double.POSITIVE_INFINITY;
+        startResolveTime = Double.POSITIVE_INFINITY;
+        finishResolveTime = Double.POSITIVE_INFINITY;
     }
 
     public boolean isRefuse() {

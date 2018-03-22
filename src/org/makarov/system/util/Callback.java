@@ -7,5 +7,5 @@ import java.util.Queue;
 @FunctionalInterface
 public interface Callback {
 
-    void call(Queue<Task> resultTasks, double endTime);
+    void call(Queue<Task> result, double finishTime);
 }
