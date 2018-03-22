@@ -16,15 +16,15 @@ public class Main {
     // 2 - число обслуживающих приборов в системе
     // ∞ - указывает число источников требований
 
-    private static final int COUNT = 1000;
+    private static final int COUNT = 1000;      //общее колличество заданий
 
-    private static final int QUEUE_SIZE = 2;
+    private static final int QUEUE_SIZE = 2;    //размер очереди для ожидания
 
-    private static final int DEVICE_COUNT = 2;
+    private static final int DEVICE_COUNT = 2;  //количество обработчиков задач
 
-    private static final double LAMBDA = 0.3;
+    private static final double LAMBDA = 0.3;   //частота прихода новых заданий
 
-    private static final double U = 0.3;
+    private static final double U = 0.3;        //скорость обработки заданий
 
     public static void main(String[] args) {
         Service service = new Service(COUNT, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U);
