@@ -2,42 +2,42 @@ package org.makarov.system.entity;
 
 public class Task implements Comparable<Task> {
 
-    private double beginTime;
+    private double arriveTime;
 
-    private double serviceTime;
+    private double beginResolveTime;
 
-    private double endTime;
+    private double endResolveTime;
 
     private boolean isRefuse = false;
 
-    public Task(double beginTime) {
-        this.beginTime = beginTime;
+    public Task(double arriveTime) {
+        this.arriveTime = arriveTime;
     }
 
-    public double getBeginTime() {
-        return beginTime;
+    public double getArriveTime() {
+        return arriveTime;
     }
 
-    public void setServiceTime(double serviceTime) {
-        this.serviceTime = serviceTime;
+    public void setBeginResolveTime(double beginResolveTime) {
+        this.beginResolveTime = beginResolveTime;
     }
 
-    public double getServiceTime() {
-        return serviceTime;
+    public double getBeginResolveTime() {
+        return beginResolveTime;
     }
 
-    public void setEndTime(double endTime) {
-        this.endTime = endTime;
+    public void setEndResolveTime(double endResolveTime) {
+        this.endResolveTime = endResolveTime;
     }
 
-    public double getEndTime() {
-        return endTime;
+    public double getEndResolveTime() {
+        return endResolveTime;
     }
 
     public void refuse() {
         isRefuse = true;
-        serviceTime = Double.POSITIVE_INFINITY;
-        endTime = Double.POSITIVE_INFINITY;
+        beginResolveTime = Double.POSITIVE_INFINITY;
+        endResolveTime = Double.POSITIVE_INFINITY;
     }
 
     public boolean isRefuse() {
@@ -46,6 +46,6 @@ public class Task implements Comparable<Task> {
 
     @Override
     public int compareTo(Task task) {
-        return Double.compare(this.getBeginTime(), task.getBeginTime());
+        return Double.compare(this.getArriveTime(), task.getArriveTime());
     }
 }

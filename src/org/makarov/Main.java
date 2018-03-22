@@ -37,8 +37,8 @@ public class Main {
                 if (task.isRefuse()) {
                     countRefused++;
                 } else {
-                    timeWorking += task.getEndTime() - task.getBeginTime();
-                    queueWaiting += task.getServiceTime() - task.getBeginTime();
+                    timeWorking += task.getEndResolveTime() - task.getArriveTime();
+                    queueWaiting += task.getBeginResolveTime() - task.getArriveTime();
                 }
             }
             int countResolved = resultTasks.size() - countRefused;

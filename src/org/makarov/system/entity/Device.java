@@ -26,7 +26,7 @@ public class Device {
     public Task resolveTask() {
         if (this.currentTask != null) {
             Task task = this.currentTask;
-            task.setEndTime(getEndTime());
+            task.setEndResolveTime(getEndTime());
             clear();
 
             return task;
@@ -49,6 +49,6 @@ public class Device {
             return Double.MAX_VALUE;
         }
 
-        return this.currentTask.getServiceTime() + this.resolveTime;
+        return this.currentTask.getBeginResolveTime() + this.resolveTime;
     }
 }

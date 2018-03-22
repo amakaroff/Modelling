@@ -106,7 +106,7 @@ public class Service {
     }
 
     private double getTaskArriveTime(Task task) {
-        return task == null ? Double.MAX_VALUE : task.getBeginTime();
+        return task == null ? Double.MAX_VALUE : task.getArriveTime();
     }
 
     private Map<Double, Device> createDeviceWorkTimeMap() {
@@ -157,7 +157,7 @@ public class Service {
 
     private void executeNewTask(Device device, Task task) {
         if (task != null) {
-            task.setServiceTime(currentTime);
+            task.setBeginResolveTime(currentTime);
             device.processTask(task);
             serviceQueue.remove();
         }
