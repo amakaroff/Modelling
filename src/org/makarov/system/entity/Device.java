@@ -26,7 +26,7 @@ public class Device {
     public Task resolveTask() {
         if (this.currentTask != null) {
             Task task = this.currentTask;
-            task.setFinishResolveTime(getEndTime());
+            task.setFinishResolveTime(this.service.getCurrentTime());
             clear();
 
             return task;
@@ -41,7 +41,7 @@ public class Device {
     }
 
     public boolean isFinish() {
-        return this.currentTask == null || getEndTime() <= service.getCurrentTime();
+        return this.currentTask == null || getEndTime() <= this.service.getCurrentTime();
     }
 
     public double getEndTime() {

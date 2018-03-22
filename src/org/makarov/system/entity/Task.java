@@ -2,7 +2,7 @@ package org.makarov.system.entity;
 
 public class Task implements Comparable<Task> {
 
-    private double arriveTime;
+    private final double arriveTime;
 
     private double startResolveTime;
 
