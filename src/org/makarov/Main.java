@@ -51,8 +51,8 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        Service serviceOne = new Service(0, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U, 0.5);
-        Service serviceTwo = new Service(0, QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U, 0.5);
+        Service serviceOne = new Service(QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U, 0.5);
+        Service serviceTwo = new Service(QUEUE_SIZE, DEVICE_COUNT, LAMBDA, U, 0.5);
         TaskManager manager = new TaskManager(COUNT, LAMBDA, U);
         manager.addService(serviceOne);
         manager.addService(serviceTwo);

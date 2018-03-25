@@ -46,6 +46,10 @@ public class Service {
         this.resultQueue = resultQueueInit();
     }
 
+    public Service(int queueSize, int deviceCount, double lambda, double u, double percent) {
+        this(0, queueSize, deviceCount, lambda, u, percent);
+    }
+
     public Service(int count, int queueSize, int deviceCount, double lambda, double u, double percent) {
         this(count, queueSize, deviceCount, lambda, u);
         this.percent = percent;
