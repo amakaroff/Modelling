@@ -6,6 +6,8 @@ import org.makarov.system.util.Callback;
 import org.makarov.system.util.ExponentialDistribution;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Service {
 
@@ -27,6 +29,8 @@ public class Service {
 
     private final Queue<Task> resultQueue;
 
+    private double percent = 1.0;
+
     public Service(int count, int queueSize, int deviceCount, double lambda, double u) {
         this.currentTime = 0;
 
@@ -42,16 +46,37 @@ public class Service {
         this.resultQueue = resultQueueInit();
     }
 
+    public Service(int count, int queueSize, int deviceCount, double lambda, double u, double percent) {
+        this(count, queueSize, deviceCount, lambda, u);
+        this.percent = percent;
+    }
+
+    public double getPercent() {
+        return percent;
+    }
+
+    public Queue<Task> getResultQueue() {
+        return resultQueue;
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
     private Queue<Task> tasksInit(double time) {
-        Queue<Task> tasks = new PriorityQueue<>(count);
+        if (count != 0) {
+            Queue<Task> tasks = new PriorityQueue<>(count);
 
-        for (int i = 0; i < count; i++) {
-            time += exponentialDistribution.getForArrive();
-            Task task = new Task(time);
-            tasks.add(task);
+            for (int i = 0; i < count; i++) {
+                time += exponentialDistribution.getForArrive();
+                Task task = new Task(time);
+                tasks.add(task);
+            }
+
+            return tasks;
+        } else {
+            return new PriorityQueue<>();
         }
-
-        return tasks;
     }
 
     private List<Device> devicesInit() {
@@ -73,36 +98,30 @@ public class Service {
 
     public void run(Callback callback) {
         while (isContinueWorking()) {
-            Task task = tasks.peek();
-
-            double taskTime = getTaskArriveTime(task);
-            Map<Double, Device> deviceEndTimes = createDeviceWorkTimeMap();
-            double minDeviceEndTime = Collections.min(deviceEndTimes.keySet());
-
-            currentTime = Math.min(taskTime, minDeviceEndTime);
-            if (taskTime < minDeviceEndTime) {
-                processArriveTaskEvent();
-            } else {
-                Device device = deviceEndTimes.get(minDeviceEndTime);
-                processDeviceResolveTaskEvent(device);
-            }
+            doIteration();
         }
 
         callback.call(resultQueue, currentTime);
     }
 
+    public void doIteration() {
+        Task task = tasks.peek();
+
+        double taskTime = getTaskArriveTime(task);
+        Map<Double, Device> deviceEndTimes = createDeviceWorkTimeMap();
+        double minDeviceEndTime = Collections.min(deviceEndTimes.keySet());
+
+        currentTime = Math.min(taskTime, minDeviceEndTime);
+        if (taskTime < minDeviceEndTime) {
+            processArriveTaskEvent();
+        } else {
+            Device device = deviceEndTimes.get(minDeviceEndTime);
+            processDeviceResolveTaskEvent(device);
+        }
+    }
+
     private boolean isContinueWorking() {
-        if (!tasks.isEmpty() || !serviceQueue.isEmpty()) {
-            return true;
-        }
-
-        for (Device device : devices) {
-            if (device.getEndTime() != Double.MAX_VALUE) {
-                return true;
-            }
-        }
-
-        return false;
+        return !tasks.isEmpty() || !serviceQueue.isEmpty() || devices.stream().anyMatch(device -> !device.isFinish());
     }
 
     private double getTaskArriveTime(Task task) {
@@ -110,12 +129,7 @@ public class Service {
     }
 
     private Map<Double, Device> createDeviceWorkTimeMap() {
-        Map<Double, Device> deviceEndTimes = new HashMap<>();
-        for (Device device : devices) {
-            deviceEndTimes.put(device.getEndTime(), device);
-        }
-
-        return deviceEndTimes;
+        return devices.stream().collect(Collectors.toMap(Device::getEndTime, Function.identity(), (key, value) -> key));
     }
 
     private void processArriveTaskEvent() {
@@ -184,5 +198,18 @@ public class Service {
     private void refuseTask(Task task) {
         task.refuse();
         resultQueue.add(task);
+    }
+
+    public double getNextEventTime() {
+        double arriveTime = Double.MAX_VALUE;
+        Task peek = tasks.peek();
+        if (peek != null) {
+            arriveTime = peek.getArriveTime();
+        }
+
+        Map<Double, Device> deviceWorkTimeMap = createDeviceWorkTimeMap();
+        Double deviceEventTime = Collections.min(deviceWorkTimeMap.keySet());
+
+        return Math.min(arriveTime, deviceEventTime);
     }
 }
