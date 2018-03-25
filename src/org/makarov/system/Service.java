@@ -120,22 +120,30 @@ public class Service {
 
     private void processArriveTaskEvent() {
         Task task = tasks.poll();
-        checkServiceQueue(task);
+        if (!isEmptyQueue()) {
+            checkServiceQueue(task);
+        }
 
         for (Device device : devices) {
-            task = serviceQueue.peek();
+            if (!isEmptyQueue()) {
+                task = serviceQueue.peek();
+            }
 
             if (task != null && device.isFinish()) {
                 completeOldTask(device);
                 executeNewTask(device, task);
+                task = null;
             }
+        }
+
+        if (isEmptyQueue() && task != null) {
+            refuseTask(task);
         }
     }
 
     private void checkServiceQueue(Task task) {
         if (serviceQueue.size() == queueSize) {
-            task.refuse();
-            resultQueue.add(task);
+            refuseTask(task);
         } else {
             serviceQueue.add(task);
         }
@@ -159,11 +167,22 @@ public class Service {
         if (task != null) {
             task.setStartResolveTime(currentTime);
             device.processTask(task);
-            serviceQueue.remove();
+            if (!isEmptyQueue()) {
+                serviceQueue.remove();
+            }
         }
     }
 
     public double getCurrentTime() {
         return currentTime;
+    }
+
+    private boolean isEmptyQueue() {
+        return queueSize == 0;
+    }
+
+    private void refuseTask(Task task) {
+        task.refuse();
+        resultQueue.add(task);
     }
 }
